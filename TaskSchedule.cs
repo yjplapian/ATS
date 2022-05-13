@@ -1,9 +1,5 @@
-//using System;
-using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine;
-//using UnityEditor;
 
 namespace Assets
 {
@@ -15,16 +11,26 @@ namespace Assets
 
         public Task nextTask;
         public Task currentTask;
-        public Task previousTask;
+
+        public bool sortOnTime;
 
         public void OnValidate()
         {
+
+            if (sortOnTime)
+                tasks.Sort((a, b) => a.startAt.CompareTo(b.startAt));
+
             if(tasks.Count >= 2)
             nextTask = tasks[1];
 
             currentTask = tasks[0];
-            previousTask = null;
             taskIndex = 1;
+
+            tasks[0].isFirst = true;
+
+            for (int i = 1; i < tasks.Count; i++)           
+                tasks[i].isFirst = false;
+
         }
 
         public void SetNextTask()

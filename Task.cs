@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-
 using UnityEngine;
 
 namespace Assets
@@ -8,27 +5,21 @@ namespace Assets
     [CreateAssetMenu]
     public class Task : ScriptableObject
     {
-        public bool isFirst;
+        public ITask task;
+
         public float startAt;
-        public float endAt;
+        public bool isFirst;
         public bool containsAction;
+        public bool callInterface;
+
         public string action;
         public Vector3 position;
 
         public bool IsPerforming { get; set; } = false;
         public bool IsCompleted { get; set; } = false;
+
+        public void OnValidate() => ResetTask();
         
-
-        void Awake()
-        {
-        
-        }
-
-        public void OnValidate()
-        {
-            ResetTask();
-        }
-
         public void ResetTask()
         {
             IsPerforming = false;
@@ -41,6 +32,14 @@ namespace Assets
             motor.Agent.SetDestination(position);
         }
 
-        public void PerformAction(Animator animator, float crossfade) => animator.CrossFade(action, crossfade);
+        public void PerformAction(Animator animator, float crossfade)
+        {
+            animator.CrossFade(action, crossfade);
+
+            if (callInterface)
+                Calltask();
+        }
+
+        public void Calltask() => task.ExecuteTask();
     }
 }
